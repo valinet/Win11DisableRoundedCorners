@@ -204,20 +204,20 @@ int main(int argc, char** argv)
         {
             printf("Unable to take ownership of system file.\n");
             _getch();
-            return 7;
+            return 8;
         }
         DeleteFileA(szOriginalDWM);
         if (!MoveFileA(szDWM, szOriginalDWM))
         {
             printf("Unable to backup system file.\n");
             _getch();
-            return 7;
+            return 9;
         }
         if (!CopyFileA(szModifiedDWM, szDWM, FALSE))
         {
             printf("Unable to replace system file.\n");
             _getch();
-            return 1;
+            return 10;
         }
         DeleteFileA(szModifiedDWM);
     }

@@ -187,7 +187,7 @@ int main(int argc, char** argv)
             _getch();
             return 6;
         }
-        char szPattern[9] = { 0x8B, 0xC1, 0x48, 0x83, 0xC4, 0x20, 0x5B, 0xC3 };
+        char szPattern[8] = { 0x8B, 0xC1, 0x48, 0x83, 0xC4, 0x20, 0x5B, 0xC3 };
         char szPayload[2] = { 0x31, 0xC0 }; // xor eax, eax
         char* off = memmem(lpFileBase + addr[0], 1000, szPattern, 8);
         if (!off)

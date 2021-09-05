@@ -11,6 +11,8 @@ It is preferable but not mandatory to run the files from a separate directory. T
 
 Original `uDWM.dll` is backed up as `uDWM_win11drc.bak` in `%windir%\System32`.
 
+Consult the source code if you want to patch manually, which is also quite advisable, it only takes changing 2 bytes in the `uDWM.dll` file.
+
 Please make a backup of the original `uDWM.dll` file before using so you can restore properly in case something is messed up. Use this software at your own risk.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -6,6 +6,8 @@
 
 int main(int argc, char** argv)
 {
+    BOOL bRestore = FALSE;
+
     char szTaskkill[MAX_PATH];
     ZeroMemory(
         szTaskkill,
@@ -48,13 +50,14 @@ int main(int argc, char** argv)
         MAX_PATH,
         "\\uDWM_win11drc.bak"
     );
+    bRestore = fileExists(szOriginalDWM);
 
     char szModifiedDWM[_MAX_PATH];
     ZeroMemory(
         szModifiedDWM,
         (_MAX_PATH) * sizeof(char)
     );
-    if (!strcmp(szPath, "Win11RestoreRoundedCorners.exe"))
+    if (bRestore)
     {
         GetSystemDirectoryA(
             szModifiedDWM,
@@ -96,7 +99,7 @@ int main(int argc, char** argv)
         "\\uDWM.dll"
     );
 
-    if (!strcmp(szPath, "Win11RestoreRoundedCorners.exe"))
+    if (bRestore)
     {
         DeleteFileA(szModifiedDWM);
         if (!MoveFileA(szDWM, szModifiedDWM))
@@ -114,6 +117,7 @@ int main(int argc, char** argv)
     }
     else
     {
+
         if (!CopyFileA(szDWM, szModifiedDWM, FALSE))
         {
             printf(
@@ -150,7 +154,7 @@ int main(int argc, char** argv)
             _getch();
             return 3;
         }
-        printf("Function address is: 0x%x\n", addr[0]);
+        printf("Function address is: 0x%x.\n", addr[0]);
         DeleteFile(szModifiedDWM);
         PathRemoveFileSpecA(szModifiedDWM);
         strcat_s(
@@ -187,16 +191,8 @@ int main(int argc, char** argv)
             _getch();
             return 6;
         }
-        char szPattern[8] = { 0x8B, 0xC1, 0x48, 0x83, 0xC4, 0x20, 0x5B, 0xC3 };
-        char szPayload[2] = { 0x31, 0xC0 }; // xor eax, eax
-        char* off = memmem(lpFileBase + addr[0], 1000, szPattern, 8);
-        if (!off)
-        {
-            printf("Unable to find pattern in file.\n");
-            _getch();
-            return 7;
-        }
-        memcpy(off, szPayload, sizeof(szPayload));
+        char szPayload[8] = { 0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00, 0xc3}; // mov rax, 0; ret
+        memcpy(lpFileBase + addr[0], szPayload, sizeof(szPayload));
         UnmapViewOfFile(lpFileBase);
         CloseHandle(hFileMapping);
         CloseHandle(hFile);
@@ -236,8 +232,8 @@ int main(int argc, char** argv)
         &pi
     );
     WaitForSingleObject(pi.hProcess, INFINITE);
-    Sleep(1000);
-    if (!strcmp(szPath, "Win11RestoreRoundedCorners.exe"))
+    Sleep(10000);
+    if (bRestore)
     {
         DeleteFileA(szModifiedDWM);
     }

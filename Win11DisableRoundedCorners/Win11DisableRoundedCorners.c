@@ -59,6 +59,43 @@ int main(int argc, char** argv)
     );
     if (bRestore)
     {
+        /*
+        char szSfcscannow[MAX_PATH];
+        ZeroMemory(
+            szSfcscannow,
+            (MAX_PATH) * sizeof(char)
+        );
+        szSfcscannow[0] = '\"';
+        GetSystemDirectoryA(
+            szSfcscannow + sizeof(char),
+            MAX_PATH
+        );
+        strcat_s(
+            szSfcscannow,
+            MAX_PATH,
+            "\\sfc.exe\" /scannow"
+        );
+        STARTUPINFO si = {sizeof(si)};
+        PROCESS_INFORMATION pi;
+        BOOL b = CreateProcessA(
+            NULL,
+            szSfcscannow,
+            NULL,
+            NULL,
+            TRUE,
+            CREATE_UNICODE_ENVIRONMENT,
+            NULL,
+            NULL,
+            &si,
+            &pi
+        );
+        WaitForSingleObject(pi.hProcess, INFINITE);
+        DeleteFileA(szOriginalDWM);
+        printf("Operation successful.\n");
+        Sleep(10000);
+        ExitWindowsEx(EWX_REBOOT | EWX_FORCE | EWX_FORCEIFHUNG, SHTDN_REASON_FLAG_PLANNED);
+        exit(0);
+        */
         GetSystemDirectoryA(
             szModifiedDWM,
             MAX_PATH
@@ -117,7 +154,6 @@ int main(int argc, char** argv)
     }
     else
     {
-
         if (!CopyFileA(szDWM, szModifiedDWM, FALSE))
         {
             printf(
@@ -155,7 +191,7 @@ int main(int argc, char** argv)
             return 3;
         }
         printf("Function address is: 0x%x.\n", addr[0]);
-        DeleteFile(szModifiedDWM);
+        DeleteFileA(szModifiedDWM);
         PathRemoveFileSpecA(szModifiedDWM);
         strcat_s(
             szModifiedDWM,
@@ -196,16 +232,27 @@ int main(int argc, char** argv)
         UnmapViewOfFile(lpFileBase);
         CloseHandle(hFileMapping);
         CloseHandle(hFile);
+        if (!CopyFileA(szDWM, szOriginalDWM, FALSE))
+        {
+            printf("Unable to backup system file.\n");
+            _getch();
+            return 9;
+        }
         if (!VnTakeOwnership(szDWM))
         {
             printf("Unable to take ownership of system file.\n");
             _getch();
             return 8;
         }
+        strcat_s(
+            szOriginalDWM,
+            MAX_PATH,
+            "1"
+        );
         DeleteFileA(szOriginalDWM);
         if (!MoveFileA(szDWM, szOriginalDWM))
         {
-            printf("Unable to backup system file.\n");
+            printf("Unable to prepare for replacing system file.\n");
             _getch();
             return 9;
         }
@@ -236,6 +283,10 @@ int main(int argc, char** argv)
     if (bRestore)
     {
         DeleteFileA(szModifiedDWM);
+    }
+    else
+    {
+        DeleteFileA(szOriginalDWM);
     }
     printf("Operation successful.\n");
 	return 0;

@@ -177,12 +177,12 @@ int main(int argc, char** argv)
             _getch();
             return 2;
         }
-        DWORD addr[1] = { 0 };
-        char* name[1] = { "CTopLevelWindow::GetEffectiveCornerStyle" };
+        DWORD addr = 0;
+        char* name = "CTopLevelWindow::GetEffectiveCornerStyle";
         if (VnGetSymbols(
             szModifiedDWM,
-            addr,
-            name,
+            &addr,
+            &name,
             1
         ))
         {
@@ -190,7 +190,7 @@ int main(int argc, char** argv)
             _getch();
             return 3;
         }
-        printf("Function address is: 0x%x.\n", addr[0]);
+        printf("Function address is: 0x%x.\n", addr);
         DeleteFileA(szModifiedDWM);
         PathRemoveFileSpecA(szModifiedDWM);
         strcat_s(
@@ -227,8 +227,10 @@ int main(int argc, char** argv)
             _getch();
             return 6;
         }
-        char szPayload[8] = { 0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00, 0xc3}; // mov rax, 0; ret
-        memcpy(lpFileBase + addr[0], szPayload, sizeof(szPayload));
+        
+	    // xor eax, eax
+        // ret
+        *(PULONG)(lpFileBase + addr) = 0xC3C031UL;
         UnmapViewOfFile(lpFileBase);
         CloseHandle(hFileMapping);
         CloseHandle(hFile);

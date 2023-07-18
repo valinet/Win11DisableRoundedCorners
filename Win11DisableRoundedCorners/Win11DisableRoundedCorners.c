@@ -8,6 +8,11 @@ int main(int argc, char** argv)
 {
     BOOL bRestore = FALSE;
 
+    if (argc == 2 && strcmp(argv[1], "-restore") == 0)
+    {
+        bRestore = TRUE;
+    }
+
     char szTaskkill[MAX_PATH];
     ZeroMemory(
         szTaskkill,
@@ -50,7 +55,6 @@ int main(int argc, char** argv)
         MAX_PATH,
         "\\uDWM_win11drc.bak"
     );
-    bRestore = fileExists(szOriginalDWM);
 
     char szModifiedDWM[_MAX_PATH];
     ZeroMemory(
